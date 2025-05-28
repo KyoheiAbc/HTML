@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: hsl(0, 0%, 94%);
+        }
+
+        canvas {
+            height: 90vh;
+            width: 45vh;
+            background: hsl(0, 0%, 90%);
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="256" height="512"></canvas>
+    <script>
+        const [canvas, ctx] = [document.querySelector('canvas'), document.querySelector('canvas').getContext('2d')];
+
+        const gameLoop = () => {
+            console.log(new Date().toLocaleTimeString());
+            setTimeout(gameLoop, 33);
+        };
+
+        gameLoop();
+    </script>
+</body>
+
+</html>
