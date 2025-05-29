@@ -17,5 +17,5 @@ class Input {
     }
     #ed(e) { e.preventDefault?.(); !this.#m && this.#q.push(5); this.#s = null; }
     #p(e) { const t = e.touches?.[0] || e; return { x: t.clientX, y: t.clientY }; }
-    getInput() { return this.#q.shift() || null; }
+    get() { return this.#q.shift() || null; }
 }

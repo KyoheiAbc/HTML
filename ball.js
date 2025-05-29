@@ -1,25 +1,21 @@
 class Ball {
-    constructor(x, y, colorNumber) { this.x = (x / 32 | 0) * 32 + 16; this.y = y; this.colorNumber = colorNumber; }
-    static findCollision(c, o) {
-        const cx = c.x, cy = c.y;
+    constructor(x, y, c) { this.x = (x / 32 | 0) * 32 + 16; this.y = y; this.c = c; }
+    static find(a, o) {
         for (let i = 0; i < o.length; i++) {
             const b = o[i];
-            if (c !== b) {
-                const dx = cx - b.x, dy = cy - b.y;
-                if (dx * dx + dy * dy < 1024) return b;
-            }
+            if (a !== b && (a.x - b.x) ** 2 + (a.y - b.y) ** 2 < 1024) return b;
         }
         return null;
     }
     put(x, y, o) {
-        const ox = this.x, oy = this.y;
+        const px = this.x, py = this.y;
         this.x = (x / 32 | 0) * 32 + 16; this.y = y;
-        const c = Ball.findCollision(this, o);
-        if (c) {
-            const d = c.y - this.y;
-            if (d) this.y = c.y + (d > 0 ? -32 : 32);
-            if (Ball.findCollision(this, o)) { this.x = ox; this.y = oy; }
+        const h = Ball.find(this, o);
+        if (h) {
+            const d = h.y - this.y;
+            d && (this.y = h.y + (d > 0 ? -32 : 32));
+            Ball.find(this, o) && (this.x = px, this.y = py);
         }
     }
-    update(o) { this.colorNumber && this.put(this.x, this.y + 1, o); }
+    update(o) { this.c && this.put(this.x, this.y + 1, o); }
 }
