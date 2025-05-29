@@ -1,37 +1,21 @@
 class Input {
-    static THRESHOLD = 64;
-    #queue = [];
-    #start = null;
-    #moved = false;
+    static T = 50;
+    #q = []; #s = null; #m = 0;
     constructor() {
-        ['mousedown', 'touchstart'].forEach(e => addEventListener(e, this.#onStart.bind(this)));
-        ['mousemove', 'touchmove'].forEach(e => addEventListener(e, this.#onMove.bind(this)));
-        ['mouseup', 'touchend'].forEach(e => addEventListener(e, this.#onEnd.bind(this)));
+        ['mousedown', 'touchstart'].map(e => addEventListener(e, this.#st.bind(this)));
+        ['mousemove', 'touchmove'].map(e => addEventListener(e, this.#mv.bind(this)));
+        ['mouseup', 'touchend'].map(e => addEventListener(e, this.#ed.bind(this)));
     }
-    #onStart(e) {
-        e.preventDefault?.();
-        this.#start = this.#getPos(e);
-        this.#moved = false;
-    }
-    #onMove(e) {
-        if (!this.#start) return;
-        e.preventDefault?.();
-        const p = this.#getPos(e), dx = p.x - this.#start.x, dy = p.y - this.#start.y;
-        if (Math.abs(dx) > Input.THRESHOLD || Math.abs(dy) > Input.THRESHOLD) {
-            this.#moved = true;
-            this.#queue.push(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 4) : (dy > 0 ? 2 : 8));
-            Math.abs(dx) > Math.abs(dy) ? this.#start.x += dx > 0 ? Input.THRESHOLD : -Input.THRESHOLD : this.#start.y += dy > 0 ? Input.THRESHOLD : -Input.THRESHOLD;
+    #st(e) { e.preventDefault?.(); this.#s = this.#p(e); this.#m = 0; }
+    #mv(e) {
+        if (!this.#s) return; e.preventDefault?.();
+        const p = this.#p(e), x = p.x - this.#s.x, y = p.y - this.#s.y, a = Math.abs(x), b = Math.abs(y);
+        if (a > Input.T || b > Input.T) {
+            this.#m = 1; this.#q.push(a > b ? (x > 0 ? 6 : 4) : (y > 0 ? 2 : 8));
+            this.#s[a > b ? 'x' : 'y'] += (a > b ? x : y) > 0 ? Input.T : -Input.T;
         }
     }
-    #onEnd(e) {
-        e.preventDefault?.();
-        if (!this.#moved) this.#queue.push(5);
-        this.#start = null;
-    }
-    #getPos(e) {
-        return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
-    }
-    getInput() {
-        return this.#queue.shift() || null;
-    }
+    #ed(e) { e.preventDefault?.(); !this.#m && this.#q.push(5); this.#s = null; }
+    #p(e) { const t = e.touches?.[0] || e; return { x: t.clientX, y: t.clientY }; }
+    getInput() { return this.#q.shift() || null; }
 }
