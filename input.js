@@ -1,6 +1,7 @@
 class Input {
     static T = 50;
     #q = []; #s = null; #m = 0;
+    pnt = { x: 0, y: 0 }; // Placeholder for pointer position, not used in this code
     constructor() {
         ['mousedown', 'touchstart'].map(e => addEventListener(e, this.#st.bind(this)));
         ['mousemove', 'touchmove'].map(e => addEventListener(e, this.#mv.bind(this)));
@@ -8,6 +9,7 @@ class Input {
     }
     #st(e) { e.preventDefault?.(); this.#s = this.#p(e); this.#m = 0; }
     #mv(e) {
+        this.pnt = this.#p(e); // Update pointer position
         if (!this.#s) return; e.preventDefault?.();
         const p = this.#p(e), x = p.x - this.#s.x, y = p.y - this.#s.y, a = Math.abs(x), b = Math.abs(y);
         if (a > Input.T || b > Input.T) {
